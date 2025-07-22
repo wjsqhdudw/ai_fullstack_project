@@ -1,0 +1,26 @@
+version: '3.5'
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_local
+    environment:
+      - POSTGRES_PASSWORD=달순2!@
+      - POSTGRES_USER=boyoung33
+      - POSTGRES_DB=by_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+
+  milvus-standalone:
+    image: milvusdb/milvus:v2.4.3
+    container_name: milvus-standalone
+    command: ["milvus", "run", "standalone"]
+    environment:
+      - ETCD_USE_EMBED=true
+      - MINIO_USE_EMBED=true
+    ports:
+      - "19530:19530"   # Milvus gRPC API
+      - "9091:9091"     # Milvus REST API
+    volumes:
+      - ./milvus_data:/var/lib/milvus
