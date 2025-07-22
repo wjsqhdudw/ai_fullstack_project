@@ -1,8 +1,7 @@
-version: '3.5'
 services:
   postgres:
     image: postgres:16
-    container_name: postgres_local
+    container_name: postgres
     environment:
       - POSTGRES_PASSWORD=달순2!@
       - POSTGRES_USER=boyoung33
@@ -12,9 +11,9 @@ services:
     volumes:
       - ./pg_data:/var/lib/postgresql/data
 
-  milvus-standalone:
+  milvus:
     image: milvusdb/milvus:v2.4.3
-    container_name: milvus-standalone
+    container_name: milvus
     command: ["milvus", "run", "standalone"]
     environment:
       - ETCD_USE_EMBED=true
@@ -24,3 +23,19 @@ services:
       - "9091:9091"     # Milvus REST API
     volumes:
       - ./milvus_data:/var/lib/milvus
+
+  fast_api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: fast_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - milvus
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app:/app/commons
+    volumes:
+      - ./backend/logs:/app/logs

@@ -7,7 +7,7 @@ sleep 1
 echo ""
 echo "[컨테이너 기동 상태 체크]"
 
-SERVICES=("postgres_local" "milvus-standalone")
+SERVICES=("postgres" "milvus" "fast_api")
 
 for SERVICE in "${SERVICES[@]}"
 do
